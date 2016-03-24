@@ -38,5 +38,43 @@ more parameters .
 
 int path_exists(int *maze, int rows, int columns, int x1, int y1, int x2, int y2)
 {
-	return 1;
+	int return_value;
+
+	//check basic conditions
+	if (x1 < 0 || x2 < 0 || x1 >= rows || x2 >= rows || y1 < 0 || y2 < 0 || y1 >= columns || y2 >= columns)
+		return 0;
+	if (*((maze + x1*columns) + y1) == 0 || *((maze + x2*columns) + y2) == 0)
+		return 0;
+	if (x1 == x2&&y1 == y2)
+		return 1;
+
+	//move right
+	*((maze + x1*columns) + y1) = 0;
+	return_value = path_exists(maze, rows, columns, x1 - 1, y1, x2, y2);
+	*((maze + x1*columns) + y1) = 1;
+	if (return_value)
+		return 1;
+
+	//move left
+	*((maze + x1*columns) + y1) = 0;
+	return_value = path_exists(maze, rows, columns, x1 + 1, y1, x2, y2);
+	*((maze + x1*columns) + y1) = 1;
+	if (return_value)
+		return 1;
+
+	//move down
+	*((maze + x1*columns) + y1) = 0;
+	return_value = path_exists(maze, rows, columns, x1, y1 - 1, x2, y2);
+	*((maze + x1*columns) + y1) = 1;
+	if (return_value)
+		return 1;
+
+	//move up
+	*((maze + x1*columns) + y1) = 0;
+	return_value = path_exists(maze, rows, columns, x1, y1 + 1, x2, y2);
+	*((maze + x1*columns) + y1) = 1;
+	if (return_value)
+		return 1;
+
+	return 0;
 }
