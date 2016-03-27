@@ -43,6 +43,72 @@ P.S: The Above Problem is just a modified version of a popular BackTracking prob
 */
 
 #include "stdafx.h"
-int solve_nsnipers(int *battlefield, int n){
-	return 0;
+
+
+int check_vertically(int *inp,int y,int n)
+{
+    int index;
+    for(index=0;index<n;index++)
+    {
+        if(*((inp+n*index)+y)==1)
+            return 0;
+    }
+    return 1;
+}
+
+int check_left_slant_diagonal(int *inp,int x,int y,int n)
+{
+    int index1,index2;
+    for(index1=x,index2=y;index1!=-1&&index2!=n;index1--,index2++)
+    {
+        if(*((inp+n*index1)+index2)==1)
+            return 0;
+    }
+    return 1;
+}
+
+int check_right_slant_diagonal(int *inp,int x,int y,int n)
+{
+    int index1,index2;
+    for(index1=x,index2=y;index1!=-1&&index2!=-1;index1--,index2--)
+    {
+        if(*((inp+n*index1)+index2)==1)
+            return 0;
+    }
+    return 1;
+}
+
+int check_diagonally(int *inp,int x,int y,int n)
+{
+    if(check_left_slant_diagonal(inp,x,y,n) && check_right_slant_diagonal(inp,x,y,n))
+        return 1;
+    return 0;
+}
+
+int solve_nsnipers_recursively(int *battlefield,int count,int n)
+{
+	int index;
+    if(count==n)
+        return 1;
+    for(index=0;index<n;index++)
+    {
+        if(check_vertically(battlefield,index,n)&&check_diagonally(battlefield,count,index,n))
+        {
+            *((battlefield + count*n)+index) = 1;
+            if(solve_nsnipers_recursively(battlefield,count+1,n))
+                return 1;
+            *((battlefield + count*n)+index) = 0;
+        }
+    }
+    return 0;
+}
+
+int solve_nsnipers(int *battlefield, int n)
+{
+	if(battlefield==NULL)
+		return 0;
+    else if(solve_nsnipers_recursively(battlefield,0,n))
+    	return 1;
+    else
+    	return 0;
 }
